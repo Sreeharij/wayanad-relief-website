@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig.js';
 import { Link } from 'react-router-dom';
+import "./styles.css"
 
 const AdminPage = () => {
   const [data, setData] = useState([]);
@@ -67,47 +68,47 @@ const AdminPage = () => {
       <nav className="bg-gradient-to-r from-blue-800 to-blue-900 p-4 shadow-xl">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="relative flex items-center justify-between h-16">
-            <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+            <div className="flex-1 flex items-center justify-center sm:items-stretch">
               <div className="flex-shrink-0">
                 <Link to="/" className="text-white text-3xl font-extrabold">Wayanad Relief</Link>
               </div>
             </div>
-            <div className="flex items-center ml-4 space-x-4">
-              <input
-                type="checkbox"
-                checked={showClosed}
-                onChange={() => setShowClosed(!showClosed)}
-                className="mr-2"
-              />
-              <label className="text-gray-200 text-lg font-medium">Show Closed Requests</label>
-              <span className="ml-2 text-gray-200 text-lg">{closedRequestsCount}</span>
-            </div>
-            <div className="flex items-center ml-4 space-x-4">
-              <button
-                onClick={() => setViewMode('itemsCount')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
-              >
-                View Items Count
-              </button>
-              <button
-                onClick={() => setViewMode('locationItems')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
-              >
-                View Items by Location
-              </button>
-              <button
-                onClick={() => setViewMode('default')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
-              >
-                Default View
-              </button>
-            </div>
           </div>
         </div>
       </nav>
+      <div className="admin-nav2">
+        <button
+          onClick={() => setViewMode('itemsCount')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
+        >
+          View Items Count
+        </button>
+        <button
+          onClick={() => setViewMode('locationItems')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
+        >
+          View Items by Location
+        </button>
+        <button
+          onClick={() => setViewMode('default')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
+        >
+          Default View
+        </button>
+      </div>
       <div className="max-w-7xl mx-auto p-6">
         <div className="p-4">
           <h1 className="text-3xl font-bold mb-6 text-center">Request Data</h1>
+          <div className="admin-filter flex items-center ml-4 space-x-4">
+            <input
+              type="checkbox"
+              checked={showClosed}
+              onChange={() => setShowClosed(!showClosed)}
+              className="mr-2"
+            />
+            <label className="text-lg font-medium">Show Closed Requests</label>
+            <span className="ml-2 text-lg">{closedRequestsCount}</span>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {viewMode === 'default' && data
               .filter(item => showClosed || item.status === 'open')

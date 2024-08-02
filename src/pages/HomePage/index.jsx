@@ -31,13 +31,11 @@ const HomePage = () => {
       <h1 className="home-h1">Wayanad Relief</h1>
 
       <ul className="home-ul">
-        <li><Link to="request-form">Request Item</Link></li>
-        <li>Required Items</li>
-        <li>Donate Money</li>
+        <li><Link to="request-form">Request New Item</Link></li>
       </ul>
 
       <div className="home-main">
-        <h3 className="home-h3">Requested Items</h3>
+        <h3 className="home-h3">Pending Requests</h3>
         <ItemsTable data={data} />
       </div>
     </div>

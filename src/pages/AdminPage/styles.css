@@ -1,0 +1,14 @@
+.admin-nav2 {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.admin-filter {
+    display: flex;
+    justify-content: center;
+    color: #000;
+    margin-bottom: 1rem;
+}
