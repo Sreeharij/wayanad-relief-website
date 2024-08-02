@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../../firebaseConfig.js';
 import { collection, addDoc } from 'firebase/firestore';
+import "./styles.css";
 
 const RequestForm = ({ data, setData }) => {
   const [formData, setFormData] = useState({
@@ -126,19 +127,17 @@ const RequestForm = ({ data, setData }) => {
               </button>
             </div>
           ))}
-          <div>
             <button
               type="button"
               onClick={handleAddItem}
-              className="w-full bg-blue-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="request-btn bg-blue-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Add Another Item
             </button>
-          </div>
           <div>
             <button
               type="submit"
-              className="w-full bg-indigo-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="request-btn bg-indigo-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Submit Request
             </button>
