@@ -27,11 +27,11 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <Link className="home-login" to="admin">Admin Login</Link>
+      <Link className="home-login" to="/admin">Admin Login</Link>
       <h1 className="home-h1">Wayanad Relief</h1>
 
       <ul className="home-ul">
-        <li><Link to="request-form">Request New Item</Link></li>
+        <li><Link to="/request-form">Request New Item</Link></li>
       </ul>
 
       <div className="home-main">

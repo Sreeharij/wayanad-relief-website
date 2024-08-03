@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebaseConfig.js';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import "./styles.css";
+import { Link } from 'react-router-dom';
+
 
 const RequestForm = ({ data, setData }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,43 @@ const RequestForm = ({ data, setData }) => {
     items: [{ itemName: '', itemQuantity: '' }],
     status: 'open' // default status
   });
+  const [previousItems, setPreviousItems] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const suggestionsRef = useRef(null);
+
+  // Fetch previous item names from Firestore
+  useEffect(() => {
+    const fetchPreviousItems = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'wayanad-relief'));
+        const items = new Set(); // Use a Set to avoid duplicates
+        querySnapshot.forEach((doc) => {
+          const requestData = doc.data();
+          requestData.items.forEach((item) => {
+            items.add(item.itemName);
+          });
+        });
+        setPreviousItems([...items]);
+      } catch (error) {
+        console.error('Error fetching previous items: ', error);
+      }
+    };
+
+    fetchPreviousItems();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+        setSuggestions([]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +62,14 @@ const RequestForm = ({ data, setData }) => {
     const { name, value } = e.target;
     const updatedItems = [...formData.items];
     updatedItems[index] = { ...updatedItems[index], [name]: value };
+
+    if (name === 'itemName') {
+      const filteredSuggestions = previousItems.filter(item =>
+        item.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    }
+
     setFormData({
       ...formData,
       items: updatedItems
@@ -44,6 +91,16 @@ const RequestForm = ({ data, setData }) => {
     });
   };
 
+  const handleSelectSuggestion = (index, suggestion) => {
+    const updatedItems = [...formData.items];
+    updatedItems[index] = { ...updatedItems[index], itemName: suggestion };
+    setFormData({
+      ...formData,
+      items: updatedItems
+    });
+    setSuggestions([]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,8 +108,6 @@ const RequestForm = ({ data, setData }) => {
       const requestRef = collection(db, 'wayanad-relief');
       await addDoc(requestRef, formData);
 
-      // setData([...data, formData]);
-      
       setFormData({
         location: '',
         description: '',
@@ -68,9 +123,14 @@ const RequestForm = ({ data, setData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-4">Emergency Item Request</h2>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
+  <div className="mb-4">
+    <Link to="/" className="request-btn bg-gray-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-gray-600">
+      Home
+    </Link>
+  </div>
+  <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-bold mb-4">Emergency Item Request</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Location</label>
@@ -94,9 +154,9 @@ const RequestForm = ({ data, setData }) => {
             ></textarea>
           </div>
           {formData.items.map((item, index) => (
-            <div key={index} className="border p-4 rounded-md">
+            <div key={index} className="border p-4 rounded-md relative">
               <h3 className="text-xl font-semibold mb-2">Item {index + 1}</h3>
-              <div>
+              <div ref={suggestionsRef}>
                 <label className="block text-sm font-medium text-gray-700">Item Name</label>
                 <input
                   type="text"
@@ -106,6 +166,19 @@ const RequestForm = ({ data, setData }) => {
                   required
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
+                {suggestions.length > 0 && (
+                  <ul className="absolute bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-40 overflow-auto z-10">
+                    {suggestions.map((suggestion, i) => (
+                      <li
+                        key={i}
+                        onClick={() => handleSelectSuggestion(index, suggestion)}
+                        className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Item Quantity</label>
@@ -127,13 +200,13 @@ const RequestForm = ({ data, setData }) => {
               </button>
             </div>
           ))}
-            <button
-              type="button"
-              onClick={handleAddItem}
-              className="request-btn bg-blue-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Add Another Item
-            </button>
+          <button
+            type="button"
+            onClick={handleAddItem}
+            className="request-btn bg-blue-500 text-white px-3 py-2 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add Another Item
+          </button>
           <div>
             <button
               type="submit"

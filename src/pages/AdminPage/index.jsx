@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig.js';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./styles.css"
 
 const AdminPage = () => {
@@ -10,6 +10,7 @@ const AdminPage = () => {
   const [aggregateItems, setAggregateItems] = useState({});
   const [locationItems, setLocationItems] = useState({});
   const [viewMode, setViewMode] = useState('default'); // 'default', 'itemsCount', 'locationItems'
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,6 +96,12 @@ const AdminPage = () => {
         >
           Default View
         </button>
+        <button
+          onClick={() => navigate(-1)} // Navigate back
+          className="bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition-all duration-300"
+        >
+          Back
+        </button>
       </div>
       <div className="max-w-7xl mx-auto p-6">
         <div className="p-4">
@@ -150,18 +157,20 @@ const AdminPage = () => {
             {viewMode === 'locationItems' && (
               <div className="p-6 bg-white rounded-lg shadow-lg border-l-4 border-blue-500">
                 <h2 className="text-2xl font-semibold mb-4 text-blue-600">Items by Location</h2>
-                {Object.entries(locationItems).map(([location, items]) => (
-                  <div key={location} className="mb-4">
-                    <h3 className="text-xl font-semibold mb-2 text-blue-600">Location: {location}</h3>
-                    <ul className="list-disc list-inside pl-4">
-                      {items.map((itemDetail, idx) => (
-                        <li key={idx} className="text-gray-700">
-                          <span className="font-medium">{itemDetail.itemName}</span>: {itemDetail.itemQuantity}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                {Object.entries(locationItems).map(([location, items]) => 
+                  items.length > 0 ? (
+                    <div key={location} className="mb-4">
+                      <h3 className="text-xl font-semibold mb-2 text-blue-600">Location: {location}</h3>
+                      <ul className="list-disc list-inside pl-4">
+                        {items.map((itemDetail, idx) => (
+                          <li key={idx} className="text-gray-700">
+                            <span className="font-medium">{itemDetail.itemName}</span>: {itemDetail.itemQuantity}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null
+                )}
               </div>
             )}
           </div>
