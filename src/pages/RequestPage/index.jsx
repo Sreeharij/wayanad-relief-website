@@ -3,8 +3,9 @@ import { db } from '../../firebaseConfig.js';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import "./styles.css";
 import { Link } from 'react-router-dom';
+import Filter from 'bad-words'; 
 
-
+const filter = new Filter();
 const RequestForm = ({ data, setData }) => {
   const [formData, setFormData] = useState({
     location: '',
@@ -103,6 +104,16 @@ const RequestForm = ({ data, setData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const hasProfanity = [
+      formData.location,
+      formData.description,
+      ...formData.items.map(item => item.itemName)
+    ].some(text => filter.isProfane(text));
+  
+    if (hasProfanity) {
+      alert('Please remove any inappropriate content before submitting.');
+      return;
+    }
 
     try {
       const requestRef = collection(db, 'wayanad-relief');

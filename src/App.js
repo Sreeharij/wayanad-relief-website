@@ -25,11 +25,15 @@ function App() {
         existingWidget.innerHTML = '';
       }
 
-      new window.google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,ta,hi,ml', // Include only the languages you want
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
+      try {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ta,hi,ml', // Include only the languages you want
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      } catch (error) {
+        console.error('Error initializing Google Translate:', error);
+      }
     };
 
     return () => {
@@ -47,8 +51,8 @@ function App() {
   
   return (
     <div className="App">
-      <header style={{ position: 'relative', padding: '10px', backgroundColor: '#f1f1f1' }}>
-        <div id="google_translate_element"></div> {/* Google Translate Widget */}
+      <header style={{ position: 'relative', padding: '1px', backgroundColor: '#ffffff' }}>
+        <div id="google_translate_element"></div> 
       </header>
       <BrowserRouter>
         <Routes>
