@@ -12,3 +12,31 @@ body {
 button {
   all: unset;
 }
+
+/* Styles for the Google Translate widget container */
+#google_translate_element {
+  top: 10px; /* Adjust the distance from the top */
+  left: 10px; /* Adjust the distance from the right */
+  z-index: 1000; /* Ensure it's above other content */ /* Background color */
+}
+
+/* Additional styling for widget elements (if needed) */
+body #goog-gt {
+  font-size: 14px; /* Adjust font size */
+}
+
+body #goog-gt-widget {
+  background: #f1f1f1; /* Background color of the widget */
+  border-radius: 5px; /* Rounded corners */
+}
+
+/* Style for individual dropdown elements */
+body .goog-te-menu-value {
+  color: #333; /* Text color */
+}
+
+/* Style for the dropdown menu */
+body .goog-te-menu {
+  border: 1px solid #ddd; /* Border for dropdown */
+}
+
