@@ -23,10 +23,10 @@ The Google Translate API was utilized for translating languages in the inventory
 
 ## Interface
 
-![home_page](screenshots/home_page.png)
+![home_page](public/home_page.png)
 
 
-![admin_portal](screenshots/admin_portal.png)
+![admin_portal](public/admin_portal.png)
 
 
 ## How to Use
